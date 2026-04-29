@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RC Beam Designer — EIT Standard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+/* =============================================
+   RC BEAM DESIGNER — EIT Standard
+   Industrial / Blueprint Engineering Aesthetic
+   ============================================= */
+
+:root {
+  --bg:          #0d0f14;
+  --bg2:         #131720;
+  --bg3:         #1a1f2e;
+  --surface:     #1e2435;
+  --surface2:    #252c3d;
+  --border:      #2e3650;
+  --border2:     #3d4866;
+
+  --primary:     #f0c040;
+  --primary-dim: #a07c1a;
+  --green:       #3ddc84;
+  --red:         #ff5c5c;
+  --blue:        #4db8ff;
+  --orange:      #ff8c42;
+  --purple:      #b48cff;
+
+  --text:        #e8ecf4;
+  --text2:       #9aa3be;
+  --text3:       #5a6280;
+
+  --font-mono:   'IBM Plex Mono', monospace;
+  --font-ui:     'IBM Plex Sans Thai', sans-serif;
+
+  --radius:      4px;
+  --radius-lg:   8px;
+  --shadow:      0 4px 24px rgba(0,0,0,0.5);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(240,192,64,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(77,184,255,0.03) 0%, transparent 50%);
+}
+
+/* ── HEADER ─────────────────────────── */
+.app-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-icon {
+  font-size: 20px;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.header-title {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--primary);
+}
+
+.header-sub {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+
+.header-badge {
+  background: var(--primary);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+/* ── MAIN LAYOUT ─────────────────────── */
+.app-main {
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 0;
+  padding: 0;
+}
+
+/* ── PANEL BASICS ────────────────────── */
+.panel {
+  padding: 28px 24px;
+}
+
+.panel-input {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  min-height: calc(100vh - 56px - 40px);
+}
+
+.panel-results {
+  padding: 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.panel-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--primary);
+  background: rgba(240,192,64,0.12);
+  border: 1px solid var(--primary-dim);
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+
+.panel-header h2 {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+
+/* ── INPUT GROUPS ────────────────────── */
+.input-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 14px 12px;
+  margin-bottom: 16px;
+  background: var(--bg3);
+}
+
+.group-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--primary);
+  text-transform: uppercase;
+  padding: 0 6px;
+}
+
+.input-row {
+  margin-top: 12px;
+}
+
+.input-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text2);
+  margin-bottom: 5px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+.input-row label sub {
+  font-size: 10px;
+  vertical-align: sub;
+}
+
+.unit {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--blue);
+  background: rgba(77,184,255,0.1);
+  border: 1px solid rgba(77,184,255,0.2);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.input-row input[type="number"] {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield;
+}
+
+.input-row input[type="number"]::-webkit-outer-spin-button,
+.input-row input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.input-row input[type="number"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(240,192,64,0.12);
+}
+
+.input-row input[type="number"]:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+}
+
+.hint {
+  font-size: 10.5px;
+  color: var(--text3);
+  margin-top: 3px;
+  font-family: var(--font-ui);
+  font-style: italic;
+}
+
+/* ── BUTTONS ─────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.btn-icon { font-size: 11px; }
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--bg);
+  flex: 1;
+}
+.btn-primary:hover {
+  background: #ffd060;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(240,192,64,0.3);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+}
+.btn-secondary:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: rgba(77,184,255,0.06);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(255,92,92,0.06);
+}
+
+/* ── VERDICT BANNER ──────────────────── */
+.verdict-banner {
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 2px solid;
+  animation: fadeSlide 0.4s ease;
+}
+
+.verdict-banner.pass {
+  background: rgba(61,220,132,0.07);
+  border-color: var(--green);
+}
+.verdict-banner.fail {
+  background: rgba(255,92,92,0.07);
+  border-color: var(--red);
+}
+
+.verdict-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.verdict-main {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.verdict-banner.pass .verdict-main { color: var(--green); }
+.verdict-banner.fail .verdict-main { color: var(--red); }
+
+.verdict-detail {
+  font-size: 12.5px;
+  color: var(--text2);
+  margin-top: 3px;
+  line-height: 1.6;
+}
+
+/* ── RESULT CARDS ────────────────────── */
+.result-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent, var(--border2));
+}
+
+.result-card.accent-yellow { --accent: var(--primary); }
+.result-card.accent-green  { --accent: var(--green); }
+.result-card.accent-blue   { --accent: var(--blue); }
+.result-card.accent-orange { --accent: var(--orange); }
+.result-card.accent-red    { --accent: var(--red); }
+.result-card.accent-purple { --accent: var(--purple); }
+.result-card.span2         { grid-column: span 2; }
+
+.result-card:hover { border-color: var(--border2); }
+
+.rc-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.rc-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.rc-value .rc-unit {
+  font-size: 11px;
+  color: var(--text3);
+  margin-left: 3px;
+  font-weight: 400;
+}
+
+.rc-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+.rc-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+}
+.badge-pass { background: rgba(61,220,132,0.15); color: var(--green); }
+.badge-fail { background: rgba(255,92,92,0.15);  color: var(--red);   }
+.badge-warn { background: rgba(255,140,66,0.15); color: var(--orange);}
+
+/* ── DIAGRAM SECTION ─────────────────── */
+.diagram-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+}
+
+.canvas-wrap {
+  display: flex;
+  justify-content: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+.rebar-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+/* ── STEPS SECTION ───────────────────── */
+.steps-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+}
+
+.steps-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.step-block {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  border-left: 3px solid var(--primary-dim);
+  transition: border-color 0.2s;
+  animation: fadeSlide 0.3s ease;
+}
+
+.step-block:hover { border-left-color: var(--primary); }
+
+.step-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.step-formula {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--blue);
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.step-result {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green);
+  margin-top: 6px;
+}
+
+.step-note {
+  font-size: 11.5px;
+  color: var(--text3);
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── PLACEHOLDER ─────────────────────── */
+.placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 360px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text3);
+  text-align: center;
+  padding: 40px;
+}
+
+.placeholder-icon { font-size: 40px; opacity: 0.4; }
+.placeholder-text { font-size: 14px; color: var(--text2); }
+.placeholder-text strong { color: var(--primary); }
+.placeholder-sub  { font-size: 12px; }
+
+/* ── FOOTER ──────────────────────────── */
+.app-footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  padding: 12px 24px;
+  letter-spacing: 0.04em;
+}
+
+/* ── UTILITIES ───────────────────────── */
+.hidden { display: none !important; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ──────────────────────── */
+@media (max-width: 900px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+  .panel-input {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    min-height: unset;
+  }
+  .result-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-main { padding: 0; }
+  .panel { padding: 20px 14px; }
+  .result-cards { grid-template-columns: 1fr; }
+  .result-card.span2 { grid-column: span 1; }
+  .btn-row { flex-direction: column; }
+  .btn-primary { flex: unset; width: 100%; justify-content: center; }
+}
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-icon">⬛</span>
+        <div>
+          <div class="header-title">RC BEAM DESIGNER</div>
+          <div class="header-sub">EIT Standard · SI Units · ACI 318 Approach</div>
+        </div>
+      </div>
+      <div class="header-badge">วสท. / EIT</div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <section class="panel panel-input">
+      <div class="panel-header">
+        <span class="panel-num">01</span>
+        <h2>Design Parameters</h2>
+      </div>
+
+      <form id="beamForm" onsubmit="return false;">
+
+        <fieldset class="input-group">
+          <legend class="group-label">MATERIAL PROPERTIES</legend>
+
+          <div class="input-row">
+            <label for="fc">
+              Concrete Strength f'c
+              <span class="unit">MPa</span>
+            </label>
+            <input type="number" id="fc" value="24" min="17" max="60" step="1" />
+            <div class="hint">ปกติใช้ 24 MPa (B24)</div>
+          </div>
+
+          <div class="input-row">
+            <label for="fy">
+              Steel Yield Strength f<sub>y</sub>
+              <span class="unit">MPa</span>
+            </label>
+            <input type="number" id="fy" value="390" min="250" max="600" step="1" />
+            <div class="hint">SD40 = 390 MPa (มาตรฐาน)</div>
+          </div>
+          
+          <div class="input-row">
+            <label for="fyt">
+              Stirrup Yield Strength f<sub>yt</sub>
+              <span class="unit">MPa</span>
+            </label>
+            <input type="number" id="fyt" value="240" min="200" max="600" step="10" />
+            <div class="hint">SR24 = 240 MPa (สำหรับเหล็กปลอก)</div>
+          </div>
+        </fieldset>
+
+        <fieldset class="input-group">
+          <legend class="group-label">BEAM GEOMETRY</legend>
+
+          <div class="input-row">
+            <label for="b">
+              Beam Width b
+              <span class="unit">mm</span>
+            </label>
+            <input type="number" id="b" value="250" min="150" max="1000" step="25" />
+          </div>
+
+          <div class="input-row">
+            <label for="h">
+              Total Depth h
+              <span class="unit">mm</span>
+            </label>
+            <input type="number" id="h" value="500" min="200" max="2000" step="25" />
+          </div>
+
+          <div class="input-row">
+            <label for="cover">
+              Effective Cover
+              <span class="unit">mm</span>
+            </label>
+            <input type="number" id="cover" value="60" min="30" max="150" step="5" />
+            <div class="hint">Clear cover + stirrup + 0.5×bar dia</div>
+          </div>
+
+          <div class="input-row">
+            <label for="dia_v">
+              Stirrup Dia. d<sub>v</sub>
+              <span class="unit">mm</span>
+            </label>
+            <input type="number" id="dia_v" value="9" min="6" max="16" step="1" />
+            <div class="hint">ปกติใช้ RB9 หรือ DB10</div>
+          </div>
+
+          <div class="input-row">
+            <label for="L">
+              Span Length L
+              <span class="unit">m</span>
+            </label>
+            <input type="number" id="L" value="6.0" min="1" max="20" step="0.5" />
+          </div>
+        </fieldset>
+
+        <fieldset class="input-group">
+          <legend class="group-label">SERVICE LOADS (per metre)</legend>
+
+          <div class="input-row">
+            <label for="DL">
+              Dead Load DL
+              <span class="unit">kN/m</span>
+            </label>
+            <input type="number" id="DL" value="20" min="0" step="0.5" />
+            <div class="hint">รวม self-weight ของคาน</div>
+          </div>
+
+          <div class="input-row">
+            <label for="LL">
+              Live Load LL
+              <span class="unit">kN/m</span>
+            </label>
+            <input type="number" id="LL" value="15" min="0" step="0.5" />
+          </div>
+        </fieldset>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="calculateBeam()">
+            <span class="btn-icon">▶</span> CALCULATE
+          </button>
+          <button class="btn btn-secondary" onclick="toggleSteps()">
+            <span class="btn-icon">≡</span> SHOW STEPS
+          </button>
+          <button class="btn btn-ghost" onclick="resetForm()">
+            ↺ RESET
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <section class="panel panel-results">
+
+      <div id="verdictBanner" class="verdict-banner hidden">
+        <div class="verdict-icon" id="verdictIcon"></div>
+        <div class="verdict-text">
+          <div class="verdict-main" id="verdictMain"></div>
+          <div class="verdict-detail" id="verdictDetail"></div>
+        </div>
+      </div>
+
+      <div id="resultsGrid" class="results-grid hidden">
+        <div class="panel-header">
+          <span class="panel-num">02</span>
+          <h2>Design Results</h2>
+        </div>
+        <div class="result-cards" id="resultCards"></div>
+      </div>
+
+      <div id="diagramSection" class="diagram-section hidden">
+        <div class="panel-header">
+          <span class="panel-num">03</span>
+          <h2>Cross-Section Diagram</h2>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="beamCanvas" width="420" height="320"></canvas>
+        </div>
+        <div class="rebar-legend" id="rebarLegend"></div>
+      </div>
+
+      <div id="stepsSection" class="steps-section hidden">
+        <div class="panel-header">
+          <span class="panel-num">04</span>
+          <h2>Step-by-Step Calculation</h2>
+        </div>
+        <div id="stepsContent" class="steps-content"></div>
+      </div>
+
+      <div id="placeholder" class="placeholder">
+        <div class="placeholder-icon">📐</div>
+        <div class="placeholder-text">Enter parameters and press <strong>CALCULATE</strong></div>
+        <div class="placeholder-sub">Results, diagram, and calculation steps will appear here</div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    RC Beam Designer · EIT/วสท. Standard · For Educational & Preliminary Design Use
+    · Always verify with licensed structural engineer
+  </footer>
+
+  <script>
+/**
+ * RC BEAM DESIGNER — EIT/วสท. Standard
+ * SI Units | ACI 318 Approach | Simply Supported Beam
+ * =====================================================
+ * Units: N, mm, MPa (internally); kN·m displayed
+ */
+
+"use strict";
+
+// ─── REBAR DATABASE (Thai standard bars) ───────────────────
+const REBAR = [
+  { name: "DB10", dia: 10,  area: 78.5 },
+  { name: "DB12", dia: 12,  area: 113.1 },
+  { name: "DB16", dia: 16,  area: 201.1 },
+  { name: "DB20", dia: 20,  area: 314.2 },
+  { name: "DB25", dia: 25,  area: 490.9 },
+  { name: "DB28", dia: 28,  area: 615.8 },
+  { name: "DB32", dia: 32,  area: 804.2 },
+];
+
+// ─── STATE ──────────────────────────────────────────────────
+let lastCalc = null;
+let stepsVisible = false;
+
+// ─── ON LOAD ────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", () => {
+  loadFromStorage();
+  document.querySelectorAll("input").forEach(inp => {
+    inp.addEventListener("change", saveToStorage);
+  });
+});
+
+// ─── LOCAL STORAGE ──────────────────────────────────────────
+function saveToStorage() {
+  const data = getInputs();
+  if (data) localStorage.setItem("rcbeam_inputs", JSON.stringify(data));
+}
+
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem("rcbeam_inputs");
+    if (!saved) return;
+    const d = JSON.parse(saved);
+    ["fc","fy","fyt","b","h","cover","L","DL","LL","dia_v"].forEach(f => {
+      if (d[f] !== undefined) document.getElementById(f).value = d[f];
+    });
+  } catch (e) { /* ignore */ }
+}
+
+// ─── READ INPUTS ────────────────────────────────────────────
+function getInputs() {
+  const ids = ["fc","fy","fyt","b","h","cover","L","DL","LL","dia_v"];
+  const vals = {};
+  let valid = true;
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    const v = parseFloat(el.value);
+    if (isNaN(v) || v < 0) {
+      el.style.borderColor = "var(--red)";
+      valid = false;
+    } else {
+      el.style.borderColor = "";
+      vals[id] = v;
+    }
+  });
+  return valid ? vals : null;
+}
+
+// ─── RESET ──────────────────────────────────────────────────
+function resetForm() {
+  const defaults = { fc:24, fy:390, fyt:240, b:250, h:500, cover:60, L:6.0, DL:20, LL:15, dia_v:9 };
+  Object.entries(defaults).forEach(([k,v]) => {
+    document.getElementById(k).value = v;
+    document.getElementById(k).style.borderColor = "";
+  });
+  localStorage.removeItem("rcbeam_inputs");
+  hideResults();
+}
+
+function hideResults() {
+  ["verdictBanner","resultsGrid","diagramSection","stepsSection"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+  document.getElementById("placeholder").classList.remove("hidden");
+  lastCalc = null;
+  stepsVisible = false;
+}
+
+// ─── TOGGLE STEPS ───────────────────────────────────────────
+function toggleSteps() {
+  if (!lastCalc) { alert("Please calculate first."); return; }
+  stepsVisible = !stepsVisible;
+  const sec = document.getElementById("stepsSection");
+  stepsVisible ? sec.classList.remove("hidden") : sec.classList.add("hidden");
+  document.querySelector(".btn-secondary").textContent =
+    stepsVisible ? "≡ HIDE STEPS" : "≡ SHOW STEPS";
+}
+
+// ════════════════════════════════════════════════════════════
+//  MAIN CALCULATION ENGINE
+// ════════════════════════════════════════════════════════════
+function calculateBeam() {
+  const inp = getInputs();
+  if (!inp) { alert("กรุณาตรวจสอบค่าที่ใส่ (Please check input values)"); return; }
+  saveToStorage();
+
+  const { fc, fy, fyt, b, h, cover, L, DL, LL, dia_v } = inp;
+
+  // Unit conversions: everything in N and mm
+  const L_mm    = L * 1000;
+  const wu_kNm  = 1.2 * DL + 1.6 * LL;   // kN/m  (= N/mm numerically)
+  const wu      = wu_kNm;                  // N/mm  (1 kN/m = 1 N/mm)
+  const d       = h - cover;               // effective depth, mm
+
+  // Factored moment & shear
+  const Mu_Nmm  = (wu * L_mm * L_mm) / 8;
+  const Mu_kNm  = Mu_Nmm / 1e6;
+  const Vu_N    = (wu * L_mm) / 2;
+  const Vu_kN   = Vu_N / 1000;
+
+  // φ factors
+  const phi_flex  = 0.90;
+  const phi_shear = 0.75;
+
+  // β₁ (ACI 318 §22.2.2.4.3)
+  const beta1 = fc <= 28
+    ? 0.85
+    : Math.max(0.65, 0.85 - 0.05 * (fc - 28) / 7);
+
+  // Quadratic solution for As,req
+  // φ·As·fy·(d - k·As/2) = Mu  where k = fy/(0.85·fc·b)
+  const k   = fy / (0.85 * fc * b);
+  const A_q = -phi_flex * fy * k / 2;
+  const B_q =  phi_flex * fy * d;
+  const C_q = -Mu_Nmm;
+  const disc = B_q * B_q - 4 * A_q * C_q;
+
+  let As_req = 0;
+  let designFeasible = true;
+
+  if (disc < 0) {
+    designFeasible = false;
+  } else {
+    const r1 = (-B_q + Math.sqrt(disc)) / (2 * A_q);
+    const r2 = (-B_q - Math.sqrt(disc)) / (2 * A_q);
+    As_req = Math.min(r1, r2);
+    if (As_req <= 0) As_req = Math.max(r1, r2);
+    if (As_req <= 0) designFeasible = false;
+  }
+
+  // As,min (ACI 318 §9.6.1.2)
+  const As_min_1 = (0.25 * Math.sqrt(fc) / fy) * b * d;
+  const As_min_2 = (1.4 / fy) * b * d;
+  const As_min   = Math.max(As_min_1, As_min_2);
+
+  // As,max  (ρmax = 0.75·ρb)
+  const rho_b   = (0.85 * beta1 * fc / fy) * (600 / (600 + fy));
+  const rho_max = 0.75 * rho_b;
+  const As_max  = rho_max * b * d;
+
+  // Design steel
+  const As_design     = Math.max(As_req, As_min);
+  const overReinforced = As_design > As_max;
+
+  // Stress block & φMn
+  const a_design   = (As_design * fy) / (0.85 * fc * b);
+  const c_design   = a_design / beta1;
+  const phiMn_Nmm  = phi_flex * As_design * fy * (d - a_design / 2);
+  const phiMn_kNm  = phiMn_Nmm / 1e6;
+  const flexOK     = phiMn_kNm >= Mu_kNm;
+
+  // --- Shear Calculation & Stirrup Design ---
+  const Vc_N           = (1/6) * Math.sqrt(fc) * b * d;
+  const Vc_kN          = Vc_N / 1000;
+  const phiVc_kN       = phi_shear * Vc_kN;
+  const Vu_critical_kN = Vu_kN;
+  const stirrupRequired = Vu_critical_kN > (phiVc_kN / 2);
+
+  // Stirrup Design (2 legs)
+  const Av = 2 * (Math.PI * Math.pow(dia_v, 2) / 4);
+  const Vs_max = (2/3) * Math.sqrt(fc) * b * d; // Upper limit of steel shear capacity
+  
+  let Vs_req_N = 0;
+  let s_req = 9999;
+  let shearFeasible = true;
+
+  if (Vu_critical_kN > phiVc_kN) {
+    Vs_req_N = (Vu_critical_kN * 1000 / phi_shear) - Vc_N;
+    if (Vs_req_N > Vs_max) {
+      shearFeasible = false; // Section too small, exceeds ACI limit
+    } else {
+      s_req = (Av * fyt * d) / Vs_req_N;
+    }
+  }
+
+  // Maximum Spacing Limits (ACI)
+  let s_max = Math.min(d/2, 600);
+  if (Vs_req_N > (1/3) * Math.sqrt(fc) * b * d) {
+    s_max = Math.min(d/4, 300);
+  }
+  const s_min_1 = (Av * fyt) / (0.062 * Math.sqrt(fc) * b);
+  const s_min_2 = (Av * fyt) / (0.35 * b);
+  s_max = Math.min(s_max, s_min_1, s_min_2);
+
+  // Select Design Spacing
+  let design_s = 0;
+  if (!shearFeasible) {
+    design_s = 0; // Fail
+  } else if (!stirrupRequired) {
+    design_s = Math.floor(s_max / 25) * 25; // Provide nominal spacing
+  } else {
+    let min_s = Math.min(s_req, s_max);
+    design_s = Math.floor(min_s / 25) * 25; // Round down to nearest 25mm
+    if (design_s < 50) design_s = 50; // Practical minimum
+  }
+
+  // Calculate Final Capacity with Selected Spacing
+  let provided_Vs_N = design_s > 0 ? (Av * fyt * d) / design_s : 0;
+  let phiVn_kN = phi_shear * (Vc_N + provided_Vs_N) / 1000;
+  let shearOK = shearFeasible && (phiVn_kN >= Vu_critical_kN);
+
+  // Auto-select rebar
+  const rebarSel = selectRebar(As_design);
+  const rho_prov = rebarSel.totalArea / (b * d);
+
+  // Overall verdict
+  const overallPass = designFeasible && flexOK && !overReinforced && shearOK;
+
+  lastCalc = {
+    inp, L_mm, wu_kNm, wu, d, Mu_kNm, Vu_kN,
+    phi_flex, phi_shear, beta1, k,
+    As_req, As_min, As_min_1, As_min_2, As_max, As_design,
+    a_design, c_design, phiMn_kNm,
+    Vc_kN, phiVc_kN, Vu_critical_kN, Av, Vs_req_N, s_max, design_s, phiVn_kN, shearFeasible,
+    flexOK, shearOK, overReinforced, designFeasible,
+    stirrupRequired, rebarSel, rho_b, rho_max, rho_prov,
+    overallPass,
+  };
+
+  renderResults(lastCalc);
+}
+
+// ─── AUTO REBAR SELECTOR ────────────────────────────────────
+function selectRebar(As_required) {
+  const candidates = [];
+  REBAR.forEach(bar => {
+    for (let n = 2; n <= 8; n++) {
+      const total = n * bar.area;
+      if (total >= As_required) {
+        candidates.push({ bar, n, totalArea: total, excess: total - As_required });
+      }
+    }
+  });
+  if (candidates.length === 0) {
+    const bar = REBAR[REBAR.length - 1];
+    return { bar, n: 8, totalArea: 8 * bar.area };
+  }
+  candidates.sort((a, b) => {
+    const ed = a.excess - b.excess;
+    if (Math.abs(ed) > 100) return ed;
+    return a.n - b.n;
+  });
+  return candidates[0];
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER RESULTS
+// ═══════════════════════════════════════════════════════════
+function renderResults(r) {
+  document.getElementById("placeholder").classList.add("hidden");
+
+  // Verdict
+  const banner = document.getElementById("verdictBanner");
+  banner.className = "verdict-banner " + (r.overallPass ? "pass" : "fail");
+  banner.classList.remove("hidden");
+  document.getElementById("verdictIcon").textContent = r.overallPass ? "✓" : "✗";
+  document.getElementById("verdictMain").textContent =
+    r.overallPass ? "DESIGN — PASS" : "DESIGN — FAIL";
+
+  let detail = "";
+  if (!r.designFeasible)      detail = "⚠ Section too small — Mu exceeds section capacity. Increase b or h.";
+  else if (r.overReinforced)  detail = "⚠ Over-reinforced section — Increase beam size or use compression steel.";
+  else if (!r.flexOK)         detail = "⚠ φMn < Mu — Flexural capacity insufficient.";
+  else if (!r.shearOK)        detail = "⚠ Shear fails — Section too small or insufficient stirrups.";
+  else detail = `φMn = ${r.phiMn_kNm.toFixed(1)} kN·m ≥ Mu = ${r.Mu_kNm.toFixed(1)} kN·m  ✓    φVn = ${r.phiVn_kN.toFixed(1)} kN ${r.shearOK?"≥":"<"} Vu = ${r.Vu_critical_kN.toFixed(1)} kN`;
+  document.getElementById("verdictDetail").textContent = detail;
+
+  // Cards
+  const { inp, rebarSel } = r;
+  document.getElementById("resultCards").innerHTML = `
+    ${card("FACTORED MOMENT Mu",   r.Mu_kNm.toFixed(2),  "kN·m", "", "accent-yellow")}
+    ${card("FACTORED SHEAR Vu",    r.Vu_kN.toFixed(2),   "kN",   "", "accent-blue")}
+    ${card("REQUIRED STEEL As,req", r.As_req > 0 ? r.As_req.toFixed(0) : "N/A", "mm²",
+           `Min = ${r.As_min.toFixed(0)} mm²`, "accent-yellow")}
+    ${card("DESIGN STEEL As,design", r.As_design.toFixed(0), "mm²",
+           `Max = ${r.As_max.toFixed(0)} mm²`, "accent-orange")}
+    
+    ${card("SHEAR CAPACITY φVn", r.phiVn_kN.toFixed(2), "kN",
+           r.shearOK
+             ? `<span class="rc-badge badge-pass">PASS — φVn ≥ Vu</span>`
+             : `<span class="rc-badge badge-fail">FAIL — Section too small</span>`,
+           r.shearOK ? "accent-green" : "accent-red")}
+    ${card("STIRRUP DESIGN", r.shearFeasible ? `2-Ø${inp.dia_v} @ ${r.design_s}` : "N/A", "mm",
+           `Av = ${r.Av.toFixed(1)} mm² | Max s = ${r.s_max.toFixed(0)} mm`, 
+           r.shearFeasible ? "accent-blue" : "accent-red")}
+           
+    ${card("φMn CAPACITY", r.phiMn_kNm.toFixed(2), "kN·m",
+           r.flexOK
+             ? `<span class="rc-badge badge-pass">PASS — φMn ≥ Mu</span>`
+             : `<span class="rc-badge badge-fail">FAIL</span>`,
+           r.flexOK ? "accent-green" : "accent-red")}
+    <div class="result-card accent-green span2">
+      <div class="rc-label">RECOMMENDED REINFORCEMENT</div>
+      <div class="rc-value" style="font-size:18px;">${rebarSel.n} − ${rebarSel.bar.name}
+        <span class="rc-unit">(${rebarSel.n}×${rebarSel.bar.dia}mm⌀)</span>
+      </div>
+      <div class="rc-sub">
+        Provided As = ${rebarSel.totalArea.toFixed(0)} mm²
+        &nbsp;|&nbsp; +${((rebarSel.totalArea/r.As_design-1)*100).toFixed(1)}% over required
+        &nbsp;|&nbsp; Bar area = ${rebarSel.bar.area.toFixed(1)} mm² each
+      </div>
+    </div>
+    ${card("STEEL RATIO ρ", (r.rho_prov*100).toFixed(3), "%",
+           `ρmin=${(r.As_min/(inp.b*r.d)*100).toFixed(3)}%  ρmax=${(r.rho_max*100).toFixed(3)}%`,
+           "accent-purple")}
+  `;
+  document.getElementById("resultsGrid").classList.remove("hidden");
+
+  drawBeamSection(r);
+  document.getElementById("diagramSection").classList.remove("hidden");
+
+  buildSteps(r);
+  if (stepsVisible) document.getElementById("stepsSection").classList.remove("hidden");
+}
+
+function card(label, value, unit, sub, accent = "") {
+  return `<div class="result-card ${accent}">
+    <div class="rc-label">${label}</div>
+    <div class="rc-value">${value}<span class="rc-unit">${unit}</span></div>
+    ${sub ? `<div class="rc-sub">${sub}</div>` : ""}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BEAM CROSS-SECTION DRAWING
+// ═══════════════════════════════════════════════════════════
+function drawBeamSection(r) {
+  const canvas = document.getElementById("beamCanvas");
+  const ctx    = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const { inp, d, rebarSel } = r;
+  const { b, h, cover } = inp;
+
+  const margin = 60;
+  const scale  = Math.min((W - margin*2)/b, (H - margin*2)/h);
+  const bx = b * scale, hx = h * scale;
+  const ox = (W - bx)/2, oy = (H - hx)/2;
+
+  const C = {
+    concrete: "#1e2a3a", border: "#4db8ff",
+    rebar: "#f0c040", coverLine: "rgba(255,140,66,0.6)",
+  };
+
+  // Background
+  ctx.fillStyle = "#131720";
+  ctx.fillRect(0, 0, W, H);
+
+  // Concrete section
+  ctx.save();
+  ctx.fillStyle = C.concrete;
+  ctx.strokeStyle = C.border;
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = C.border; ctx.shadowBlur = 6;
+  roundRect(ctx, ox, oy, bx, hx, 2);
+  ctx.stroke(); ctx.shadowBlur = 0; ctx.fill();
+  ctx.restore();
+
+  // Hatch
+  ctx.save();
+  ctx.strokeStyle = "rgba(77,184,255,0.07)";
+  ctx.lineWidth = 0.8;
+  for (let i = -hx; i < bx + hx; i += 12) {
+    ctx.beginPath(); ctx.moveTo(ox+i, oy); ctx.lineTo(ox+i+hx, oy+hx); ctx.stroke();
+  }
+  ctx.restore();
+
+  // Effective depth dashed line
+  const d_y = oy + (h - d) * scale;
+  ctx.save();
+  ctx.setLineDash([4,4]); ctx.strokeStyle = C.coverLine; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(ox+4, d_y); ctx.lineTo(ox+bx-4, d_y); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+
+  // Draw Stirrup (เหล็กปลอก)
+  const stCover = Math.max((cover - rebarSel.bar.dia/2 - inp.dia_v/2), 25) * scale;
+  const stX = ox + stCover;
+  const stY = oy + stCover;
+  const stW = bx - 2 * stCover;
+  const stH = hx - 2 * stCover;
+
+  ctx.save();
+  ctx.strokeStyle = C.border; // สีเส้นเหล็กปลอก
+  ctx.lineWidth = Math.max(inp.dia_v * scale * 0.4, 1.5); // ความหนาเส้น
+  roundRect(ctx, stX, stY, stW, stH, 6);
+  ctx.stroke();
+  ctx.restore();
+
+  // Rebar circles
+  const n      = rebarSel.n;
+  const barR   = Math.max(rebarSel.bar.dia * scale * 0.5, 4);
+  const coverX = cover * scale;
+  const spacing = (bx - 2*coverX) / (n - 1);
+  const barY   = oy + hx - coverX;
+
+  for (let i = 0; i < n; i++) {
+    const bxp = ox + coverX + i * spacing;
+    ctx.save();
+    ctx.shadowColor = C.rebar; ctx.shadowBlur = 10;
+    ctx.fillStyle = C.rebar;
+    ctx.beginPath(); ctx.arc(bxp, barY, barR, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = "#fff8d0";
+    ctx.beginPath(); ctx.arc(bxp - barR*0.25, barY - barR*0.25, barR*0.3, 0, Math.PI*2); ctx.fill();
+  }
+
+  // Dimensions
+  drawDimLine(ctx, ox, oy+hx+22, ox+bx, oy+hx+22, `b = ${b} mm`, C.border);
+  drawDimLineV(ctx, ox+bx+22, oy, ox+bx+22, oy+hx, `h = ${h} mm`, C.border);
+  drawDimLineV(ctx, ox+bx+42, d_y, ox+bx+42, oy+hx, `d = ${d} mm`, C.coverLine);
+
+  ctx.save();
+  ctx.fillStyle = C.coverLine;
+  ctx.font = "10px 'IBM Plex Mono', monospace";
+  ctx.textAlign = "right";
+  ctx.fillText(`cover=${cover}mm`, ox-6, d_y+4);
+  ctx.restore();
+
+  ctx.save();
+  ctx.font = "bold 11px 'IBM Plex Mono', monospace";
+  ctx.fillStyle = C.rebar; ctx.textAlign = "center";
+  ctx.fillText(`${n}−${rebarSel.bar.name}  (As = ${rebarSel.totalArea.toFixed(0)} mm²)`, W/2, oy+hx+48);
+  ctx.restore();
+
+  document.getElementById("rebarLegend").innerHTML = `
+    <div class="legend-item"><div class="legend-dot" style="background:#4db8ff;"></div>Concrete (${inp.b}×${inp.h} mm)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:none;border:2px solid #4db8ff;"></div>Stirrup: Ø${inp.dia_v} @ ${r.design_s} mm</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0c040;"></div>Main bars: ${n}−${rebarSel.bar.name}</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(255,140,66,0.7);border-radius:0;height:2px;"></div>Effective depth d = ${d} mm</div>
+  `;
+}
+
+function roundRect(ctx, x, y, w, hh, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+hh-r);
+  ctx.quadraticCurveTo(x+w,y+hh,x+w-r,y+hh);
+  ctx.lineTo(x+r,y+hh);
+  ctx.quadraticCurveTo(x,y+hh,x,y+hh-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function drawDimLine(ctx, x1, y, x2, y2, label, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.fillStyle = color;
+  ctx.lineWidth = 0.8; ctx.font = "10px 'IBM Plex Mono', monospace"; ctx.textAlign = "center";
+  ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2,y); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x1,y-4); ctx.lineTo(x1,y+4);
+  ctx.moveTo(x2,y-4); ctx.lineTo(x2,y+4);
+  ctx.stroke();
+  ctx.fillText(label, (x1+x2)/2, y+13);
+  ctx.restore();
+}
+
+function drawDimLineV(ctx, x, y1, x2, y2, label, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 0.8;
+  ctx.beginPath(); ctx.moveTo(x,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x-4,y1); ctx.lineTo(x+4,y1);
+  ctx.moveTo(x-4,y2); ctx.lineTo(x+4,y2);
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(x+14, (y1+y2)/2); ctx.rotate(-Math.PI/2);
+  ctx.font = "10px 'IBM Plex Mono', monospace"; ctx.textAlign = "center";
+  ctx.fillText(label, 0, 0);
+  ctx.restore(); ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STEP-BY-STEP CALCULATIONS
+// ═══════════════════════════════════════════════════════════
+function buildSteps(r) {
+  const { inp } = r;
+  const { fc, fy, fyt, b, h, cover, L, DL, LL } = inp;
+
+  const steps = [
+    {
+      title: "STEP 1 — Factored Load (wu)",
+      formula: "wu = 1.2 × DL + 1.6 × LL",
+      subs:    `wu = 1.2 × ${DL} + 1.6 × ${LL}`,
+      result:  `wu = ${r.wu_kNm.toFixed(3)} kN/m  (= ${r.wu_kNm.toFixed(3)} N/mm)`,
+      note:    "Load combination per EIT/ACI 318 — Strength design (LRFD)"
+    },
+    {
+      title: "STEP 2 — Design Moment & Shear",
+      formula: "Mu = wu × L² / 8  |  Vu = wu × L / 2",
+      subs:    `Mu = ${r.wu_kNm.toFixed(3)} × ${L}² / 8  |  Vu = ${r.wu_kNm.toFixed(3)} × ${L} / 2`,
+      result:  `Mu = ${r.Mu_kNm.toFixed(2)} kN·m  |  Vu = ${r.Vu_kN.toFixed(2)} kN`,
+      note:    "Simply supported — max moment at midspan, max shear at support"
+    },
+    {
+      title: "STEP 3 — Effective Depth (d)",
+      formula: "d = h − cover",
+      subs:    `d = ${h} − ${cover}`,
+      result:  `d = ${r.d} mm`,
+      note:    "Cover = clear cover + stirrup ⌀ + 0.5 × main bar ⌀"
+    },
+    {
+      title: "STEP 4 — β₁ Coefficient",
+      formula: fc <= 28 ? "β₁ = 0.85  (f'c ≤ 28 MPa)" : "β₁ = 0.85 − 0.05×(f'c−28)/7  ≥ 0.65",
+      subs:    `f'c = ${fc} MPa`,
+      result:  `β₁ = ${r.beta1.toFixed(4)}`,
+      note:    "ACI 318-19 §22.2.2.4.3 — Rectangular stress block coefficient"
+    },
+    {
+      title: "STEP 5 — Required Steel Area (As,req)",
+      formula: "φMn = φ·As·fy·(d − a/2) = Mu\na = As·fy / (0.85·f'c·b)\nQuadratic: −φ·fy·k/2·As² + φ·fy·d·As − Mu = 0",
+      subs:    `k = ${fy}/(0.85×${fc}×${b}) = ${r.k.toFixed(6)}\nφ = ${r.phi_flex}`,
+      result:  `As,req = ${r.As_req > 0 ? r.As_req.toFixed(1) : "N/A — section too small"} mm²`,
+      note:    "Tension-controlled section (smaller root of quadratic)"
+    },
+    {
+      title: "STEP 6 — Minimum & Maximum Steel",
+      formula: "As,min = max[ (0.25√f'c/fy)·b·d , (1.4/fy)·b·d ]\nρmax = 0.75·ρb  where ρb = (0.85·β₁·f'c/fy)·(600/(600+fy))",
+      subs:    `As,min₁ = ${r.As_min_1.toFixed(1)} mm²\nAs,min₂ = ${r.As_min_2.toFixed(1)} mm²\nρb = ${r.rho_b.toFixed(5)}  →  ρmax = ${r.rho_max.toFixed(5)}`,
+      result:  `As,min = ${r.As_min.toFixed(1)} mm²  |  As,max = ${r.As_max.toFixed(1)} mm²`,
+      note:    "As,min per ACI 318 §9.6.1.2 — ensures visible cracking before failure"
+    },
+    {
+      title: "STEP 7 — Design Steel Area",
+      formula: "As,design = max(As,req , As,min)",
+      subs:    `max(${r.As_req > 0 ? r.As_req.toFixed(1) : 0} , ${r.As_min.toFixed(1)})`,
+      result:  `As,design = ${r.As_design.toFixed(1)} mm²  ${r.overReinforced ? "⚠ EXCEEDS As,max — over-reinforced!" : "✓ within limits"}`,
+      note:    `Steel ratio ρ = ${(r.rho_prov*100).toFixed(3)}%  (ρmax = ${(r.rho_max*100).toFixed(3)}%)`
+    },
+    {
+      title: "STEP 8 — Stress Block & φMn",
+      formula: "a = As·fy / (0.85·f'c·b)\nφMn = φ·As·fy·(d − a/2)",
+      subs:    `a = ${r.As_design.toFixed(1)}×${fy} / (0.85×${fc}×${b}) = ${r.a_design.toFixed(2)} mm\nc = a/β₁ = ${r.c_design.toFixed(2)} mm`,
+      result:  `φMn = ${r.phiMn_kNm.toFixed(2)} kN·m  ${r.flexOK ? "≥ Mu ✓ PASS" : "< Mu ✗ FAIL"}`,
+      note:    `c/d = ${(r.c_design/r.d).toFixed(3)} (< 0.375 → tension-controlled ✓)`
+    },
+    {
+      title: "STEP 9 — Shear Design (Stirrups)",
+      formula: `Vc = (1/6)·√f'c·b·d  |  Vs,req = (Vu/φ) − Vc\ns_req = (Av·fyt·d)/Vs,req\ns_max = min(d/2, 600, Av·fyt/(0.35b))`,
+      subs:    `Vu = ${r.Vu_kN.toFixed(2)} kN  |  Vc = ${r.Vc_kN.toFixed(2)} kN\nAv (2-Ø${inp.dia_v}) = ${r.Av.toFixed(1)} mm²\nVs_req = ${(r.Vs_req_N/1000).toFixed(2)} kN`,
+      result:  r.shearFeasible 
+               ? `Use Ø${inp.dia_v} @ ${r.design_s} mm  (φVn = ${r.phiVn_kN.toFixed(2)} kN ≥ Vu ✓)`
+               : `✗ FAIL: Vs exceeds (2/3)√f'c b d. Increase beam size.`,
+      note:    r.stirrupRequired
+               ? `Spacing controlled by: ${r.s_req < r.s_max ? "Strength (s_req)" : "Code Minimums (s_max)"}`
+               : `Vu < φVc/2 : Only nominal shear reinforcement required.`
+    },
+    {
+      title: "STEP 10 — Recommended Reinforcement",
+      formula: "Auto-select from Thai standard bar database (DB10–DB32)",
+      subs:    `As,design = ${r.As_design.toFixed(0)} mm²\nSelected: ${r.rebarSel.n} bars × ${r.rebarSel.bar.name} (Ø${r.rebarSel.bar.dia} mm, A=${r.rebarSel.bar.area} mm² each)`,
+      result:  `Provided As = ${r.rebarSel.totalArea.toFixed(0)} mm²  (+${((r.rebarSel.totalArea/r.As_design-1)*100).toFixed(1)}% surplus)`,
+      note:    "Available in Thailand: DB10, DB12, DB16, DB20, DB25, DB28, DB32"
+    }
+  ];
+
+  document.getElementById("stepsContent").innerHTML = steps.map(s => `
+    <div class="step-block">
+      <div class="step-title">${s.title}</div>
+      <div class="step-formula">${esc(s.formula)}</div>
+      <div class="step-formula" style="color:var(--orange)">${esc(s.subs)}</div>
+      <div class="step-result">→ ${esc(s.result)}</div>
+      ${s.note ? `<div class="step-note">${esc(s.note)}</div>` : ""}
+    </div>
+  `).join("");
+}
+
+function esc(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+  </script>
+</body>
+</html>
