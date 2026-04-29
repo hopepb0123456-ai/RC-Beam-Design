@@ -1174,6 +1174,7 @@ function drawBeamSection(r) {
   const C = {
     concrete: "#1e2a3a", border: "#4db8ff",
     rebar: "#f0c040", coverLine: "rgba(255,140,66,0.6)",
+    hanger: "#a07c1a" // สีสำหรับเหล็ก Hanger (Top bars)
   };
 
   // Background
@@ -1214,13 +1215,32 @@ function drawBeamSection(r) {
   const stH = hx - 2 * stCover;
 
   ctx.save();
-  ctx.strokeStyle = C.border; // สีเส้นเหล็กปลอก
-  ctx.lineWidth = Math.max(inp.dia_v * scale * 0.4, 1.5); // ความหนาเส้น
+  ctx.strokeStyle = C.border; 
+  ctx.lineWidth = Math.max(inp.dia_v * scale * 0.4, 1.5); 
   roundRect(ctx, stX, stY, stW, stH, 6);
   ctx.stroke();
   ctx.restore();
 
-  // Rebar circles
+  // Draw Hanger Bars (เหล็กโครงด้านบนสำหรับผูกเหล็กปลอก)
+  const hangerDia = 12; // ใช้ DB12 เป็น default สำหรับเหล็กกันร้าว/เหล็กแขวน
+  const hangerR = Math.max(hangerDia * scale * 0.5, 3);
+  const hangerY = stY + (inp.dia_v * scale) + hangerR; // ชิดขอบในเหล็กปลอกด้านบน
+  const hangerX1 = stX + (inp.dia_v * scale) + hangerR; // มุมซ้าย
+  const hangerX2 = stX + stW - (inp.dia_v * scale) - hangerR; // มุมขวา
+
+  ctx.save();
+  ctx.shadowColor = C.hanger; ctx.shadowBlur = 8;
+  ctx.fillStyle = C.hanger;
+  ctx.beginPath(); ctx.arc(hangerX1, hangerY, hangerR, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(hangerX2, hangerY, hangerR, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+  
+  // Highlight ให้เหล็ก Hanger ดูมีมิติ
+  ctx.fillStyle = "#fff8d0";
+  ctx.beginPath(); ctx.arc(hangerX1 - hangerR*0.25, hangerY - hangerR*0.25, hangerR*0.3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(hangerX2 - hangerR*0.25, hangerY - hangerR*0.25, hangerR*0.3, 0, Math.PI*2); ctx.fill();
+
+  // Rebar circles (เหล็กเสริมหลักด้านล่าง)
   const n      = rebarSel.n;
   const barR   = Math.max(rebarSel.bar.dia * scale * 0.5, 4);
   const coverX = cover * scale;
@@ -1256,14 +1276,15 @@ function drawBeamSection(r) {
   ctx.fillText(`${n}−${rebarSel.bar.name}  (As = ${rebarSel.totalArea.toFixed(0)} mm²)`, W/2, oy+hx+48);
   ctx.restore();
 
+  // อัปเดต Legend ด้านล่างรูปภาพ
   document.getElementById("rebarLegend").innerHTML = `
     <div class="legend-item"><div class="legend-dot" style="background:#4db8ff;"></div>Concrete (${inp.b}×${inp.h} mm)</div>
     <div class="legend-item"><div class="legend-dot" style="background:none;border:2px solid #4db8ff;"></div>Stirrup: Ø${inp.dia_v} @ ${r.design_s} mm</div>
+    <div class="legend-item"><div class="legend-dot" style="background:${C.hanger};"></div>Hanger bars (e.g. 2-DB12)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#f0c040;"></div>Main bars: ${n}−${rebarSel.bar.name}</div>
-    <div class="legend-item"><div class="legend-dot" style="background:rgba(255,140,66,0.7);border-radius:0;height:2px;"></div>Effective depth d = ${d} mm</div>
   `;
 }
-
+    
 function roundRect(ctx, x, y, w, hh, r) {
   ctx.beginPath();
   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
