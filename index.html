@@ -260,6 +260,34 @@ body {
   background: var(--surface2);
 }
 
+/* เพิ่ม CSS สำหรับ Select Dropdown */
+.input-row select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.input-row select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(240,192,64,0.12);
+}
+.input-row select:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+}
+.input-row select option {
+  background: var(--bg2);
+  color: var(--text);
+}
+
 .hint {
   font-size: 10.5px;
   color: var(--text3);
@@ -675,6 +703,24 @@ canvas {
             <input type="number" id="fyt" value="240" min="200" max="600" step="10" />
             <div class="hint">SR24 = 240 MPa (สำหรับเหล็กปลอก)</div>
           </div>
+          
+          <div class="input-row">
+            <label for="main_bar_dia">
+              Force Main Rebar Size
+              <span class="unit">mm</span>
+            </label>
+            <select id="main_bar_dia">
+              <option value="auto">Auto Select (แนะนำ)</option>
+              <option value="10">DB10</option>
+              <option value="12">DB12</option>
+              <option value="16">DB16</option>
+              <option value="20">DB20</option>
+              <option value="25">DB25</option>
+              <option value="28">DB28</option>
+              <option value="32">DB32</option>
+            </select>
+            <div class="hint">หน้างานมีเหล็กขนาดไหน บังคับเลือกได้เลย</div>
+          </div>
         </fieldset>
 
         <fieldset class="input-group">
@@ -838,7 +884,7 @@ let stepsVisible = false;
 // ─── ON LOAD ────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
   loadFromStorage();
-  document.querySelectorAll("input").forEach(inp => {
+  document.querySelectorAll("input, select").forEach(inp => {
     inp.addEventListener("change", saveToStorage);
   });
 });
@@ -857,6 +903,11 @@ function loadFromStorage() {
     ["fc","fy","fyt","b","h","cover","L","DL","LL","dia_v"].forEach(f => {
       if (d[f] !== undefined) document.getElementById(f).value = d[f];
     });
+    // โหลดค่าของ Select
+    if (d.main_bar_dia !== undefined) {
+      const el = document.getElementById("main_bar_dia");
+      if (el) el.value = d.main_bar_dia;
+    }
   } catch (e) { /* ignore */ }
 }
 
@@ -876,6 +927,11 @@ function getInputs() {
       vals[id] = v;
     }
   });
+  
+  // อ่านค่าจาก Dropdown
+  const mainBarEl = document.getElementById("main_bar_dia");
+  if (mainBarEl) vals.main_bar_dia = mainBarEl.value;
+
   return valid ? vals : null;
 }
 
@@ -886,6 +942,7 @@ function resetForm() {
     document.getElementById(k).value = v;
     document.getElementById(k).style.borderColor = "";
   });
+  document.getElementById("main_bar_dia").value = "auto";
   localStorage.removeItem("rcbeam_inputs");
   hideResults();
 }
@@ -917,7 +974,7 @@ function calculateBeam() {
   if (!inp) { alert("กรุณาตรวจสอบค่าที่ใส่ (Please check input values)"); return; }
   saveToStorage();
 
-  const { fc, fy, fyt, b, h, cover, L, DL, LL, dia_v } = inp;
+  const { fc, fy, fyt, b, h, cover, L, DL, LL, dia_v, main_bar_dia } = inp;
 
   // Unit conversions: everything in N and mm
   const L_mm    = L * 1000;
@@ -941,7 +998,6 @@ function calculateBeam() {
     : Math.max(0.65, 0.85 - 0.05 * (fc - 28) / 7);
 
   // Quadratic solution for As,req
-  // φ·As·fy·(d - k·As/2) = Mu  where k = fy/(0.85·fc·b)
   const k   = fy / (0.85 * fc * b);
   const A_q = -phi_flex * fy * k / 2;
   const B_q =  phi_flex * fy * d;
@@ -991,7 +1047,7 @@ function calculateBeam() {
 
   // Stirrup Design (2 legs)
   const Av = 2 * (Math.PI * Math.pow(dia_v, 2) / 4);
-  const Vs_max = (2/3) * Math.sqrt(fc) * b * d; // Upper limit of steel shear capacity
+  const Vs_max = (2/3) * Math.sqrt(fc) * b * d; 
   
   let Vs_req_N = 0;
   let s_req = 9999;
@@ -1000,7 +1056,7 @@ function calculateBeam() {
   if (Vu_critical_kN > phiVc_kN) {
     Vs_req_N = (Vu_critical_kN * 1000 / phi_shear) - Vc_N;
     if (Vs_req_N > Vs_max) {
-      shearFeasible = false; // Section too small, exceeds ACI limit
+      shearFeasible = false;
     } else {
       s_req = (Av * fyt * d) / Vs_req_N;
     }
@@ -1023,8 +1079,8 @@ function calculateBeam() {
     design_s = Math.floor(s_max / 25) * 25; // Provide nominal spacing
   } else {
     let min_s = Math.min(s_req, s_max);
-    design_s = Math.floor(min_s / 25) * 25; // Round down to nearest 25mm
-    if (design_s < 50) design_s = 50; // Practical minimum
+    design_s = Math.floor(min_s / 25) * 25; 
+    if (design_s < 50) design_s = 50; 
   }
 
   // Calculate Final Capacity with Selected Spacing
@@ -1032,8 +1088,8 @@ function calculateBeam() {
   let phiVn_kN = phi_shear * (Vc_N + provided_Vs_N) / 1000;
   let shearOK = shearFeasible && (phiVn_kN >= Vu_critical_kN);
 
-  // Auto-select rebar
-  const rebarSel = selectRebar(As_design);
+  // ส่งค่าที่ผู้ใช้เลือกไปให้ฟังก์ชันช่วยเลือกเหล็ก
+  const rebarSel = selectRebar(As_design, main_bar_dia);
   const rho_prov = rebarSel.totalArea / (b * d);
 
   // Overall verdict
@@ -1053,8 +1109,24 @@ function calculateBeam() {
   renderResults(lastCalc);
 }
 
-// ─── AUTO REBAR SELECTOR ────────────────────────────────────
-function selectRebar(As_required) {
+// ─── AUTO / MANUAL REBAR SELECTOR ───────────────────────────
+// เพิ่มพารามิเตอร์ forceDia เข้ามาเพื่อจัดการกรณีที่ผู้ใช้บังคับขนาดเหล็ก
+function selectRebar(As_required, forceDia = "auto") {
+  // หากผู้ใช้บังคับขนาดเหล็ก (ไม่ใช่ "auto")
+  if (forceDia !== "auto") {
+    const targetDia = parseFloat(forceDia);
+    const bar = REBAR.find(b => b.dia === targetDia);
+    if (bar) {
+      // คำนวณหาจำนวนเหล็กที่ต้องการ ปัดเศษขึ้นเสมอ
+      let n = Math.ceil(As_required / bar.area);
+      // ควรมีเหล็กอย่างน้อย 2 เส้นเสมอเพื่อให้สามารถผูกเข้ามุมเหล็กปลอกได้
+      if (n < 2) n = 2;
+      const total = n * bar.area;
+      return { bar, n, totalArea: total, excess: total - As_required };
+    }
+  }
+
+  // ถ้าเป็น "auto" ทำงานตามลอจิกเดิม
   const candidates = [];
   REBAR.forEach(bar => {
     for (let n = 2; n <= 8; n++) {
@@ -1174,7 +1246,7 @@ function drawBeamSection(r) {
   const C = {
     concrete: "#1e2a3a", border: "#4db8ff",
     rebar: "#f0c040", coverLine: "rgba(255,140,66,0.6)",
-    hanger: "#a07c1a" // สีสำหรับเหล็ก Hanger (Top bars)
+    hanger: "#a07c1a" 
   };
 
   // Background
@@ -1207,7 +1279,7 @@ function drawBeamSection(r) {
   ctx.beginPath(); ctx.moveTo(ox+4, d_y); ctx.lineTo(ox+bx-4, d_y); ctx.stroke();
   ctx.setLineDash([]); ctx.restore();
 
-  // Draw Stirrup (เหล็กปลอก)
+  // Draw Stirrup 
   const stCover = Math.max((cover - rebarSel.bar.dia/2 - inp.dia_v/2), 25) * scale;
   const stX = ox + stCover;
   const stY = oy + stCover;
@@ -1221,12 +1293,12 @@ function drawBeamSection(r) {
   ctx.stroke();
   ctx.restore();
 
-  // Draw Hanger Bars (เหล็กโครงด้านบนสำหรับผูกเหล็กปลอก)
-  const hangerDia = 12; // ใช้ DB12 เป็น default สำหรับเหล็กกันร้าว/เหล็กแขวน
+  // Draw Hanger Bars 
+  const hangerDia = 12; 
   const hangerR = Math.max(hangerDia * scale * 0.5, 3);
-  const hangerY = stY + (inp.dia_v * scale) + hangerR; // ชิดขอบในเหล็กปลอกด้านบน
-  const hangerX1 = stX + (inp.dia_v * scale) + hangerR; // มุมซ้าย
-  const hangerX2 = stX + stW - (inp.dia_v * scale) - hangerR; // มุมขวา
+  const hangerY = stY + (inp.dia_v * scale) + hangerR; 
+  const hangerX1 = stX + (inp.dia_v * scale) + hangerR; 
+  const hangerX2 = stX + stW - (inp.dia_v * scale) - hangerR; 
 
   ctx.save();
   ctx.shadowColor = C.hanger; ctx.shadowBlur = 8;
@@ -1235,12 +1307,11 @@ function drawBeamSection(r) {
   ctx.beginPath(); ctx.arc(hangerX2, hangerY, hangerR, 0, Math.PI*2); ctx.fill();
   ctx.restore();
   
-  // Highlight ให้เหล็ก Hanger ดูมีมิติ
   ctx.fillStyle = "#fff8d0";
   ctx.beginPath(); ctx.arc(hangerX1 - hangerR*0.25, hangerY - hangerR*0.25, hangerR*0.3, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(hangerX2 - hangerR*0.25, hangerY - hangerR*0.25, hangerR*0.3, 0, Math.PI*2); ctx.fill();
 
-  // Rebar circles (เหล็กเสริมหลักด้านล่าง)
+  // Rebar circles 
   const n      = rebarSel.n;
   const barR   = Math.max(rebarSel.bar.dia * scale * 0.5, 4);
   const coverX = cover * scale;
@@ -1276,7 +1347,6 @@ function drawBeamSection(r) {
   ctx.fillText(`${n}−${rebarSel.bar.name}  (As = ${rebarSel.totalArea.toFixed(0)} mm²)`, W/2, oy+hx+48);
   ctx.restore();
 
-  // อัปเดต Legend ด้านล่างรูปภาพ
   document.getElementById("rebarLegend").innerHTML = `
     <div class="legend-item"><div class="legend-dot" style="background:#4db8ff;"></div>Concrete (${inp.b}×${inp.h} mm)</div>
     <div class="legend-item"><div class="legend-dot" style="background:none;border:2px solid #4db8ff;"></div>Stirrup: Ø${inp.dia_v} @ ${r.design_s} mm</div>
@@ -1403,10 +1473,11 @@ function buildSteps(r) {
     },
     {
       title: "STEP 10 — Recommended Reinforcement",
-      formula: "Auto-select from Thai standard bar database (DB10–DB32)",
+      // ปรับเปลี่ยนข้อความให้สอดคล้องกับสิ่งที่ผู้ใช้เลือก
+      formula: inp.main_bar_dia === "auto" ? "Auto-select from Thai standard bar database (DB10–DB32)" : `User explicitly selected: DB${inp.main_bar_dia}`,
       subs:    `As,design = ${r.As_design.toFixed(0)} mm²\nSelected: ${r.rebarSel.n} bars × ${r.rebarSel.bar.name} (Ø${r.rebarSel.bar.dia} mm, A=${r.rebarSel.bar.area} mm² each)`,
       result:  `Provided As = ${r.rebarSel.totalArea.toFixed(0)} mm²  (+${((r.rebarSel.totalArea/r.As_design-1)*100).toFixed(1)}% surplus)`,
-      note:    "Available in Thailand: DB10, DB12, DB16, DB20, DB25, DB28, DB32"
+      note:    inp.main_bar_dia === "auto" ? "Available in Thailand: DB10, DB12, DB16, DB20, DB25, DB28, DB32" : "Manual override active. Amount calculated based on user selection."
     }
   ];
 
